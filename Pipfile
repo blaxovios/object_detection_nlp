@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+pdf2image = "*"
+absl-py = "*"
+abslib = "*"
+yolov4 = "*"
+tensorflow = "*"
+opencv-python = "*"
+pytesseract = "*"
+pymupdf = "*"
+wand = "*"
+minecart = "*"
+ghostscript = "*"
+poppler-utils = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

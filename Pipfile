@@ -17,6 +17,8 @@ wand = "*"
 minecart = "*"
 ghostscript = "*"
 poppler-utils = "*"
+pandas = "*"
+openpyxl = "*"
 
 [dev-packages]
 

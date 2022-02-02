@@ -22,7 +22,7 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 # Poppler dependecy is needed for pdf2image to work
 poppler = r'C:\Program Files (x86)\poppler-0.68.0\bin'
 # Extract images from pdf and save to a directory
-pdf_path = 'C:/Users/kostas.skepetaris/PycharmProjects/objectDetectionNlp/app/static/pdfs/Κυλινδρόμυλοι Α.Ε. κλπ. απόφαση 954 ΚΠολΔ.pdf'
+pdf_path = 'C:/Users/tsepe/PycharmProjects/objectDetectionNlp/app/static/pdfs/Κυλινδρόμυλοι Α.Ε. κλπ. απόφαση 954 ΚΠολΔ.pdf'
 start1 = time.time()
 
 
@@ -31,7 +31,7 @@ def convert_pdf(pdf_path, poppler):
     count = 0
     for page in pages:
         page.save(
-            'C:/Users/kostas.skepetaris/PycharmProjects/objectDetectionNlp/app/static/pages/' + 'page%d.jpg' % count,
+            'C:/Users/tsepe/PycharmProjects/objectDetectionNlp/app/static/pages/' + 'page%d.jpg' % count,
             'JPEG')
         count += 1
 
@@ -40,7 +40,7 @@ convert_pdf(pdf_path, poppler)
 end1 = time.time()
 print("Pdf to image conversion took {:.1f} seconds".format(end1 - start1))
 # Save full paths of pages in a list
-directory = 'C:/Users/kostas.skepetaris/PycharmProjects/objectDetectionNlp/app/static/pages/'
+directory = 'C:/Users/tsepe/PycharmProjects/objectDetectionNlp/app/static/pages/'
 
 
 def get_filepaths(directory):
@@ -58,35 +58,30 @@ def get_filepaths(directory):
 full_file_paths = get_filepaths(directory)
 print(full_file_paths)
 
-text_name_from_pdf = 'C:/Users/kostas.skepetaris/PycharmProjects/objectDetectionNlp/app/static/texts/' + \
+text_name_from_pdf = 'C:/Users/tsepe/PycharmProjects/objectDetectionNlp/app/static/texts/' + \
                      os.path.splitext(os.path.basename(pdf_path))[0] + '.txt'
 start2 = time.time()
 
 
 def image_to_text(text_name_from_pdf):
     # A text file is created and flushed
-    txt_file = open(text_name_from_pdf, "w+", encoding="utf-8")
-    txt_file.write("")
-    txt_file.close()
+    txt_file = open(text_name_from_pdf, "w", encoding="utf-8")
     # OpenCV will handle image processing
     for path in full_file_paths:
         img = cv2.imread(path)
         # Convert the image to gray scale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         if img is None:
-            txt_file = open(text_name_from_pdf, "w", encoding="utf-8")
+            txt_file = open(text_name_from_pdf, "a", encoding="utf-8")
             text = "---Could not read the image.---"
             txt_file.write(text)
             txt_file.close()
         else:
-            txt_file = open(text_name_from_pdf, "w", encoding="utf-8")
+            txt_file = open(text_name_from_pdf, "a", encoding="utf-8")
             text = pytesseract.image_to_string(gray, lang="ell", config=tessdata_dir_config)
             txt_file.write(text)
             txt_file.close()
-    file = open(txt_file, "w+", encoding="utf-8")
-    print(file.read())
-    file.close()
-    return file
+    return txt_file
 
 
 image_to_text(text_name_from_pdf)

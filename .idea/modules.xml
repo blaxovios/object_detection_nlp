@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/objectDetectionNlp.iml" filepath="$PROJECT_DIR$/.idea/objectDetectionNlp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/object_detection_nlp.iml" filepath="$PROJECT_DIR$/.idea/object_detection_nlp.iml" />
     </modules>
   </component>
 </project>

@@ -40,8 +40,8 @@ def excel_to_pdfs():
     source_excel = r'C:\Users\kostas.skepetaris\Desktop\KOSTAS\2_NLP\1_Greek Office\1_Terra Project\Επιθεωρήσεις_All_Excel'
     for root, dirs, files in os.walk(source_excel):
         for file in files:
+            excel_file = os.path.join(root, file)
             if (file.endswith('.xlsx') or file.endswith('.xls')):
-                excel_file = os.path.join(root, file)
                 try:
                     # Load Excel file
                     wb = o.Workbooks.Open(excel_file)
@@ -50,6 +50,7 @@ def excel_to_pdfs():
                     wb.Close(True)
                 except:
                     continue
+
     return print('Done converting excels to pdfs and copying pasting them.')
 
 excel_to_pdfs()

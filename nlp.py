@@ -1,110 +1,68 @@
-from numpy import array
-from keras.preprocessing.text import one_hot
-from keras.preprocessing.sequence import pad_sequences
-from keras.models import Sequential
-from keras.layers.core import Activation, Dropout, Dense
-from keras.layers import Flatten, LSTM
-from keras.layers import GlobalMaxPooling1D
-from keras.models import Model
-from keras.layers.embeddings import Embedding
-from sklearn.model_selection import train_test_split
-from keras.preprocessing.text import Tokenizer
-from keras.layers import Input
-from keras.layers.merge import Concatenate
-from numpy import array
-from numpy import asarray
-from numpy import zeros
+import nltk
+from nltk import word_tokenize
+from nltk.probability import FreqDist
+import urllib.request
+from matplotlib import pyplot as plt
+nltk.download('punkt')
+nltk.download("stopwords")
+from nltk.corpus import stopwords
 import pandas as pd
-import numpy as np
-import re
-from tensorflow.keras.utils import plot_model
-import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt
 
 text_filepath = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/results/deltio_nomikon/deltio 08-03-2022.xlsx'
-text_description_df = pd.read_excel(text_filepath)
-text_description_df["Asset Description"].dropna()
-text_description_df_labels = pd.DataFrame(columns=text_description_df.columns)
+text_df = pd.read_excel(text_filepath)
 
+labels_df = pd.read_excel('C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/csv/Weekly update 11012022_17022022.xlsx')
+labels_list = list(labels_df.columns)
+text_df = text_df.reindex(columns=[*text_df.columns.tolist(), 'labels'], fill_value=str(labels_list))
+text_description_labels_df = text_df[['Asset Description', 'labels']]
+text_description_labels_df = text_description_labels_df[~text_description_labels_df['Asset Description'].duplicated()]
 
-def preprocess_text(sen):
-    # Remove punctuations and numbers
-    sentence = re.sub('[^a-zA-Z]', ' ', sen)
-
-    # Single character removal
-    sentence = re.sub(r"\s+[a-zA-Z]\s+", ' ', sentence)
-
-    # Removing multiple spaces
-    sentence = re.sub(r'\s+', ' ', sentence)
-
-    return sentence
-
-X = []
-sentences = list(text_description_df["Asset Description"])
-for sen in sentences:
-    X.append(preprocess_text(sen))
-
-y = text_description_df_labels.values
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
-
-tokenizer = Tokenizer(num_words=5000)
-tokenizer.fit_on_texts(X_train)
-
-X_train = tokenizer.texts_to_sequences(X_train)
-X_test = tokenizer.texts_to_sequences(X_test)
-
-vocab_size = len(tokenizer.word_index) + 1
-
-maxlen = 200
-
-X_train = pad_sequences(X_train, padding='post', maxlen=maxlen)
-X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
-
-embeddings_dictionary = dict()
-glove_file = open('C:/Users/kostas.skepetaris/Downloads/glove.6B/glove.6B.100d.txt', encoding="utf8")
-
-for line in glove_file:
-    records = line.split()
-    word = records[0]
-    vector_dimensions = asarray(records[1:], dtype='float32')
-    embeddings_dictionary[word] = vector_dimensions
-glove_file.close()
-
-embedding_matrix = zeros((vocab_size, 100))
-for word, index in tokenizer.word_index.items():
-    embedding_vector = embeddings_dictionary.get(word)
-    if embedding_vector is not None:
-        embedding_matrix[index] = embedding_vector
-
-deep_inputs = Input(shape=(maxlen,))
-embedding_layer = Embedding(vocab_size, 100, weights=[embedding_matrix], trainable=False)(deep_inputs)
-LSTM_Layer_1 = LSTM(128)(embedding_layer)
-dense_layer_1 = Dense(6, activation='sigmoid')(LSTM_Layer_1)
-model = Model(inputs=deep_inputs, outputs=dense_layer_1)
-
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
-print(model.summary())
-plot_model(model, to_file='model_plot4a.png', show_shapes=True, show_layer_names=True)
-history = model.fit(X_train, y_train, batch_size=128, epochs=5, verbose=1, validation_split=0.2)
-score = model.evaluate(X_test, y_test, verbose=1)
-
-print("Test Score:", score[0])
-print("Test Accuracy:", score[1])
-
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train','test'], loc='upper left')
+#tokenize text by words
+words = word_tokenize(text_description_labels_df['Asset Description'][0])
+#check the number of words
+print(f"The total number of words in the text is {len(words)}")
+#find the frequency of words
+fdist = FreqDist(words)
+#print the 10 most common words
+fdist.most_common(10)
+#create an empty list to store words
+words_no_punc = []
+#iterate through the words list to remove punctuations
+for word in words:
+    if word.isalpha():
+        words_no_punc.append(word.lower())
+#print number of words without punctuation
+print(f"The total number of words without punctuation is {len(words_no_punc)}")
+#find the frequency of words
+fdist = FreqDist(words_no_punc)
+#Plot the 10 most common words
+fdist.plot(10)
 plt.show()
-
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train','test'], loc='upper left')
+#list of stopwords
+stopwords_list = stopwords.words("greek")
+print(stopwords_list)
+#create an empty list to store clean words
+clean_words = []
+#Iterate through the words_no_punc list and add non stopwords to the new clean_words list
+for word in words_no_punc:
+    if word not in stopwords_list:
+        clean_words.append(word)
+print(f"The total number of words without punctuation and stopwords is {len(clean_words)}")
+#find the frequency of words
+fdist = FreqDist(clean_words)
+#Plot the 10 most common words
+fdist.plot(10)
+plt.show()
+#Update the stopwords list
+stopwords_list.extend(["said","one","like","came","back"])
+#create an empty list to store clean words
+clean_words = []
+#Iterate through the words_no_punc list and add non stopwords to the new clean_words list
+for word in words_no_punc:
+    if word not in stopwords_list:
+        clean_words.append(word)
+#find the frequency of words
+fdist = FreqDist(clean_words)
+#Plot the 10 most common words
+fdist.plot(10)
 plt.show()

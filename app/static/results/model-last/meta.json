@@ -1,5 +1,5 @@
 {
-  "lang":"el",
+  "lang":"xx",
   "name":"pipeline",
   "version":"0.0.0",
   "spacy_version":">=3.0.8,<3.1.0",
@@ -45,11 +45,21 @@
 
   ],
   "performance":{
-    "ents_f":1.0,
-    "ents_p":1.0,
-    "ents_r":1.0,
+    "ents_f":0.969889065,
+    "ents_p":0.9592476489,
+    "ents_r":0.9807692308,
     "ents_per_type":{
-      "eauction_website":{
+      "auction_date":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "tax_id_of_debtor":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "accelerator":{
         "p":1.0,
         "r":1.0,
         "f":1.0
@@ -69,25 +79,15 @@
         "r":1.0,
         "f":1.0
       },
+      "percentage_of_ownership":{
+        "p":0.5,
+        "r":0.7142857143,
+        "f":0.5882352941
+      },
       "property_type":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "auction_date":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "tax_id_of_debtor":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "accelerator":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+        "p":0.962962963,
+        "r":0.9285714286,
+        "f":0.9454545455
       },
       "size_of_land":{
         "p":1.0,
@@ -95,17 +95,17 @@
         "f":1.0
       },
       "foreclosure_id":{
-        "p":1.0,
+        "p":0.6,
         "r":1.0,
-        "f":1.0
+        "f":0.75
       },
-      "percentage_of_ownership":{
+      "eauction_website":{
         "p":1.0,
         "r":1.0,
         "f":1.0
       }
     },
-    "tok2vec_loss":290.4718104322,
-    "ner_loss":113.6585204905
+    "tok2vec_loss":274.4391836796,
+    "ner_loss":20.7053926057
   }
 }

@@ -3,6 +3,8 @@ import pytesseract
 import cv2
 import time
 import fitz
+import numpy as np
+import shutil
 
 """With pytesseract library we also need to install tesseract-ocr for windows. 
 More info: https://github.com/UB-Mannheim/tesseract/wiki.
@@ -21,22 +23,24 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 # Poppler dependecy is needed for pdf2image to work
 poppler = r'C:\Program Files (x86)\poppler-0.68.0\bin'
 # Extract images from pdf and save to a directory
-directory = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pages/'
+directory = 'C:\\Users\\kostas.skepetaris\\PycharmProjects\\object_detection_nlp\\app\\static\\pages'
+pages = 'C:/Users/kostas.skepetaris/PycharmProjects/object_detection_nlp/app/static/pages'
 
 
 def pdf_to_txt_pymupdf(pdf_filepath):
     start = time.time()
+    # Save full paths of pages in a list
+    file_paths = []  # List which will store all of the full filepaths.
 
     # open your file
     doc = fitz.open(pdf_filepath)
     # iterate through the pages of the document and create a RGB image of the page
     for page in doc:
-        pix = page.get_pixmap()
-        pix.save(
-            "C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pages/page-%i.png" % page.number)
+        zoom = 3  # zoom factor
+        mat = fitz.Matrix(zoom, zoom)
+        pix = page.get_pixmap(matrix=mat)
+        pix.save("C:/Users/kostas.skepetaris/PycharmProjects/object_detection_nlp/app/static/pages/page-%i.png" % page.number)
 
-    # Save full paths of pages in a list
-    file_paths = []  # List which will store all of the full filepaths.
     # Walk the tree.
     for root, directories, files in os.walk(directory):
         for filename in files:
@@ -44,7 +48,7 @@ def pdf_to_txt_pymupdf(pdf_filepath):
             filepath = os.path.join(root, filename)
             file_paths.append(filepath)  # Add it to the list.
 
-    text_name_from_pdf = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/texts/' + \
+    text_name_from_pdf = 'C:/Users/kostas.skepetaris/PycharmProjects/object_detection_nlp/app/static/texts/' + \
                          os.path.splitext(os.path.basename(pdf_filepath))[0] + '.txt'
     # A text file is created and flushed
     txt_file = open(text_name_from_pdf, "w", encoding="utf-8")
@@ -52,7 +56,7 @@ def pdf_to_txt_pymupdf(pdf_filepath):
     for path in file_paths:
         img = cv2.imread(path)
         # Rescaling the image (it's recommended if you’re working with images that have a DPI of less than 300 dpi)
-        img = cv2.resize(img, None, fx=1.2, fy=1.2, interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
         # Convert the image to gray scale
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         # img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
@@ -80,15 +84,27 @@ def pdf_to_txt_pymupdf(pdf_filepath):
             txt_file.close()
         else:
             txt_file = open(text_name_from_pdf, "a", encoding="utf-8")
-            text = pytesseract.image_to_string(img, lang="eng+ell", config=tessdata_dir_config)
+            text = pytesseract.image_to_string(img, lang="ell+eng", config=tessdata_dir_config)
             txt_file.write(text)
             txt_file.close()
+
+    for root, dirs, files in os.walk(pages):
+        try:
+            for f in files:
+                os.unlink(os.path.join(root, f))
+            for d in dirs:
+                shutil.rmtree(os.path.join(root, d))
+        except OSError as e:
+            print("Error: %s : %s" % (files, e.strerror))
     end = time.time()
-    print('Pdf was converted to txt successfully.')
-    print("Pdf to text conversion took {:.1f} seconds".format(end - start))
-    print(text_name_from_pdf)
+    print("Pdf was converted to txt successfully in {:.1f} seconds".format(end - start))
     return text_name_from_pdf
 
 
-pdf_filepath = 'C:\\Users\\kostas.skepetaris\\PycharmProjects\\web_retrieve_data\\static\\pdfs\\deltio_nomikon\\report171056.pdf'
-pdf_to_txt_pymupdf(pdf_filepath)
+for root, directories, files in os.walk('C:/Users/kostas.skepetaris/Desktop/KOSTAS/2_NLP/1_Greek Office/2_test'):
+    for filename in files:
+        # Join the two strings in order to form the full filepath.
+        filepath = os.path.join(root, filename)
+        pdf_to_txt_pymupdf(filepath)
+pdf_filepath = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon/report166028.pdf'
+print('Job finished!')

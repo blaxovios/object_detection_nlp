@@ -1,5 +1,5 @@
 {
-  "lang":"el",
+  "lang":"xx",
   "name":"pipeline",
   "version":"0.0.0",
   "spacy_version":">=3.0.8,<3.1.0",
@@ -45,11 +45,21 @@
 
   ],
   "performance":{
-    "ents_f":1.0,
+    "ents_f":0.9902912621,
     "ents_p":1.0,
-    "ents_r":1.0,
+    "ents_r":0.9807692308,
     "ents_per_type":{
-      "eauction_website":{
+      "auction_date":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "tax_id_of_debtor":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "accelerator":{
         "p":1.0,
         "r":1.0,
         "f":1.0
@@ -71,25 +81,15 @@
       },
       "property_type":{
         "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "auction_date":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "tax_id_of_debtor":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "accelerator":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+        "r":0.9285714286,
+        "f":0.962962963
       },
       "size_of_land":{
+        "p":1.0,
+        "r":1.0,
+        "f":1.0
+      },
+      "eauction_website":{
         "p":1.0,
         "r":1.0,
         "f":1.0
@@ -101,11 +101,11 @@
       },
       "percentage_of_ownership":{
         "p":1.0,
-        "r":1.0,
-        "f":1.0
+        "r":0.7142857143,
+        "f":0.8333333333
       }
     },
-    "tok2vec_loss":290.4718104322,
-    "ner_loss":113.6585204905
+    "tok2vec_loss":302.1267757779,
+    "ner_loss":41.9195032544
   }
 }

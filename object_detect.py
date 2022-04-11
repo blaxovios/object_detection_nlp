@@ -3,8 +3,9 @@ import pytesseract
 import cv2
 import time
 import fitz
-import numpy as np
+import datetime
 import shutil
+import pathlib
 
 """With pytesseract library we also need to install tesseract-ocr for windows. 
 More info: https://github.com/UB-Mannheim/tesseract/wiki.
@@ -56,7 +57,7 @@ def pdf_to_txt_pymupdf(pdf_filepath):
     for path in file_paths:
         img = cv2.imread(path)
         # Rescaling the image (it's recommended if you’re working with images that have a DPI of less than 300 dpi)
-        img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(img, None, fx=1, fy=1, interpolation=cv2.INTER_CUBIC)
         # Convert the image to gray scale
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         # img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
@@ -97,14 +98,21 @@ def pdf_to_txt_pymupdf(pdf_filepath):
         except OSError as e:
             print("Error: %s : %s" % (files, e.strerror))
     end = time.time()
+    created_in = datetime.datetime.fromtimestamp(pathlib.Path(pdf_filepath).stat().st_ctime, tz=datetime.timezone.utc)
     print("Pdf was converted to txt successfully in {:.1f} seconds".format(end - start))
+    print("Txt created in:", created_in)
+    print(os.path.getmtime(pdf_filepath))
     return text_name_from_pdf
 
 
-for root, directories, files in os.walk('C:/Users/kostas.skepetaris/Desktop/KOSTAS/2_NLP/1_Greek Office/2_test'):
+'''for root, directories, files in os.walk('C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon'):
     for filename in files:
         # Join the two strings in order to form the full filepath.
         filepath = os.path.join(root, filename)
-        pdf_to_txt_pymupdf(filepath)
-pdf_filepath = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon/report166028.pdf'
+        if os.path.getmtime(filepath) >= 1649053866.0058098:
+            pdf_to_txt_pymupdf(filepath)'''
+
+
+pdf_filepath = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon/report179954.pdf'
+pdf_to_txt_pymupdf(pdf_filepath)
 print('Job finished!')

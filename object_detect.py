@@ -57,7 +57,7 @@ def pdf_to_txt_pymupdf(pdf_filepath):
     for path in file_paths:
         img = cv2.imread(path)
         # Rescaling the image (it's recommended if you’re working with images that have a DPI of less than 300 dpi)
-        img = cv2.resize(img, None, fx=1, fy=1, interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(img, None, fx=1.5, fy=1.5, interpolation=cv2.INTER_CUBIC)
         # Convert the image to gray scale
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         # img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
@@ -105,14 +105,14 @@ def pdf_to_txt_pymupdf(pdf_filepath):
     return text_name_from_pdf
 
 
-'''for root, directories, files in os.walk('C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon'):
+for root, directories, files in os.walk('C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon'):
     for filename in files:
         # Join the two strings in order to form the full filepath.
         filepath = os.path.join(root, filename)
         if os.path.getmtime(filepath) >= 1649053866.0058098:
-            pdf_to_txt_pymupdf(filepath)'''
+            pdf_to_txt_pymupdf(filepath)
 
 
-pdf_filepath = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon/report179954.pdf'
-pdf_to_txt_pymupdf(pdf_filepath)
+'''pdf_filepath = 'C:/Users/kostas.skepetaris/PycharmProjects/web_retrieve_data/static/pdfs/deltio_nomikon/report179954.pdf'
+pdf_to_txt_pymupdf(pdf_filepath)'''
 print('Job finished!')
